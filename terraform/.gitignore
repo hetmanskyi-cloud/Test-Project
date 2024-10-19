@@ -14,3 +14,7 @@ override.tf.json
 *.pem
 *.key
 *.auto.tfvars
+
+# AWS credentials
+/.aws/credentials
+/.aws/config
