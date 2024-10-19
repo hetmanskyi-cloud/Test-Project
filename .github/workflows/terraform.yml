@@ -11,38 +11,56 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout code  # Checkout the latest code from the repository
       uses: actions/checkout@v4  # Latest stable version 4
 
-    - name: Setup Terraform
+    - name: Setup Terraform  # Set up Terraform environment
       uses: hashicorp/setup-terraform@v3  # Latest stable version 3
       with:
         terraform_version: latest
 
-    - name: Configure AWS Credentials
+    - name: Configure AWS Credentials  # Configure AWS credentials for authentication
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
 
-    - name: Terraform Init
+    - name: Terraform Init  # Initialize Terraform
       run: terraform init
       working-directory: ./terraform
 
-    - name: Terraform Format
+    - name: Terraform Format  # Check Terraform format
       run: terraform fmt -check -recursive
       working-directory: ./terraform
 
-    - name: Terraform Validate
+    - name: Terraform Validate  # Validate Terraform configuration
       run: terraform validate
       working-directory: ./terraform
 
-    - name: Terraform Plan
+    - name: Terraform Plan  # Create Terraform plan
       run: terraform plan
       working-directory: ./terraform
 
-    - name: Terraform Security Scan
+    - name: Terraform Security Scan  # Run security scans using tfsec
       uses: triat/terraform-security-scan@v3  # Latest stable version 3
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup TFLint  # Set up TFLint for linting Terraform code
+      uses: wataru365/setup-tflint@v4
+
+    - name: Run TFLint  # Run TFLint to check for issues in Terraform code
+      run: tflint
+      working-directory: ./terraform
+
+    - name: Setup Python  # Set up Python environment for Checkov
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install Checkov  # Install Checkov for security scanning
+      run: pip install checkov
+
+    - name: Run Checkov  # Run Checkov to scan Terraform configuration
+      run: checkov -d ./terraform
