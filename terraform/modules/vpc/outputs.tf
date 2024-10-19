@@ -1,0 +1,17 @@
+# Output the ID of the created VPC
+output "vpc_id" {
+  description = "ID of the created VPC"
+  value       = aws_vpc.custom.id
+}
+
+# Output the IDs of the created public subnets
+output "public_subnet_ids" {
+  description = "IDs of the created public subnets"
+  value       = aws_subnet.public.*.id
+}
+
+# Output the IDs of the created private subnets
+output "private_subnet_ids" {
+  description = "IDs of the created private subnets"
+  value       = aws_subnet.private.*.id
+}
