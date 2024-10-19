@@ -1,10 +1,12 @@
-# Local variables for defining ingress rules for EC2 and RDS security groups
 locals {
+  # Ingress rules for EC2 security group
   ec2_ingress_rules = [
     { from_port = 22, to_port = 22, protocol = "tcp", cidr_blocks = ["10.0.0.0/16"], description = "SSH access from internal network" },    # SSH access from internal network
     { from_port = 80, to_port = 80, protocol = "tcp", cidr_blocks = ["10.0.0.0/16"], description = "HTTP access from internal network" },   # HTTP access from internal network
     { from_port = 443, to_port = 443, protocol = "tcp", cidr_blocks = ["10.0.0.0/16"], description = "HTTPS access from internal network" } # HTTPS access from internal network
   ]
+
+  # Ingress rules for RDS security group
   rds_ingress_rules = [
     { from_port = 3306, to_port = 3306, protocol = "tcp", cidr_blocks = ["10.0.0.0/16"], description = "MySQL access from internal network" } # MySQL access from internal network
   ]

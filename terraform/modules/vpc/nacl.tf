@@ -53,4 +53,6 @@ resource "aws_network_acl_rule" "allow_all_outbound" {
   rule_action    = "allow"
   egress         = true          # Outbound traffic
   cidr_block     = "10.0.0.0/16" # More restrictive CIDR range
+  from_port      = 0             # Allow from port 0 (or specify a different port)
+  to_port        = 65535         # Allow to port 65535 (or specify a different range)
 }

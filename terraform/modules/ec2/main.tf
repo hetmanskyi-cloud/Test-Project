@@ -30,6 +30,11 @@ resource "aws_launch_template" "ec2" {
 
   user_data = base64encode(templatefile("${path.module}/user_data_nginx.sh", {}))
 
+  # Enable HTTP token requirement for IMDS
+  metadata_options {
+    http_tokens = "required"
+  }
+
   tags = local.base_tags
 }
 

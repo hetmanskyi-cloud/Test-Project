@@ -19,11 +19,12 @@ resource "aws_db_instance" "mysql" {
   db_subnet_group_name                = aws_db_subnet_group.default.name
   skip_final_snapshot                 = true
   publicly_accessible                 = false # Avoid public access
-  backup_retention_period             = 7     # Set backup retention
+  backup_retention_period             = 30    # Set backup retention
   multi_az                            = true  # Enable multi-AZ for high availability
   storage_encrypted                   = true  # Enable storage encryption
   deletion_protection                 = true  # Enable deletion protection
   iam_database_authentication_enabled = true  # Enable IAM authentication
+  performance_insights_enabled        = true  # Enable Performance Insights
 
   vpc_security_group_ids = [var.security_group_id]
 
