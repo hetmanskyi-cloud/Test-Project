@@ -45,12 +45,12 @@ resource "aws_network_acl_rule" "deny_all_inbound" {
   cidr_block     = "0.0.0.0/0"
 }
 
-# Allow all outbound traffic from the private subnets
+# Network ACL Rule for outbound traffic with specific protocol
 resource "aws_network_acl_rule" "allow_all_outbound" {
   network_acl_id = aws_network_acl.private.id
   rule_number    = 300
-  protocol       = "-1" # All protocols
+  protocol       = "tcp" # Specify protocol instead of all
   rule_action    = "allow"
-  egress         = true # Outbound traffic
-  cidr_block     = "0.0.0.0/0"
+  egress         = true          # Outbound traffic
+  cidr_block     = "10.0.0.0/16" # More restrictive CIDR range
 }

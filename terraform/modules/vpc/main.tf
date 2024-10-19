@@ -6,10 +6,10 @@ resource "aws_vpc" "custom" {
 
 # VPC Flow Logs for capturing traffic data
 resource "aws_flow_log" "all" {
-  log_group_name = "vpc-flow-logs"
-  iam_role_arn   = "arn:aws:iam::123456789012:role/flow-logs-role"
-  vpc_id         = aws_vpc.custom.id
-  traffic_type   = "ALL"
+  log_destination = "arn:aws:logs:us-east-1:123456789012:log-group:vpc-flow-logs"
+  iam_role_arn    = "arn:aws:iam::123456789012:role/flow-logs-role"
+  vpc_id          = aws_vpc.custom.id
+  traffic_type    = "ALL"
 }
 
 # Local variables for subnet masks
