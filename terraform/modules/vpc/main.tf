@@ -4,6 +4,15 @@ resource "aws_vpc" "custom" {
   tags       = merge({ Name = var.vpc_name }, var.vpc_tags)
 }
 
+# VPC Flow Logs for capturing traffic data
+resource "aws_flow_log" "all" {
+  log_group_name = "vpc-flow-logs"
+  iam_role_arn   = "arn:aws:iam::123456789012:role/flow-logs-role"
+  vpc_id         = aws_vpc.custom.id
+  traffic_type   = "ALL"
+}
+
+# Local variables for subnet masks
 locals {
   public_masks  = length(var.public_subnet_masks) == var.public_subnet_count ? var.public_subnet_masks : [for i in range(var.public_subnet_count) : 24]
   private_masks = length(var.private_subnet_masks) == var.private_subnet_count ? var.private_subnet_masks : [for i in range(var.private_subnet_count) : 24]
@@ -14,7 +23,7 @@ resource "aws_subnet" "public" {
   count                   = var.public_subnet_count
   vpc_id                  = aws_vpc.custom.id
   cidr_block              = cidrsubnet(var.vpc_cidr_block, 32 - local.public_masks[count.index], count.index)
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false # Avoid mapping public IP on launch
   tags                    = merge({ Name = "public-subnet-${count.index}" }, var.subnet_tags)
 }
 
