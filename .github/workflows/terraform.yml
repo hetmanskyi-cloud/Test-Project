@@ -19,6 +19,13 @@ jobs:
       with:
         terraform_version: latest
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
     - name: Terraform Init
       run: terraform init
       working-directory: ./terraform
@@ -36,6 +43,6 @@ jobs:
       working-directory: ./terraform
 
     - name: Terraform Security Scan
-      uses: triat/terraform-security-scan@v1  # Latest stable version 1
+      uses: triat/terraform-security-scan@v3  # Latest stable version 3
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
