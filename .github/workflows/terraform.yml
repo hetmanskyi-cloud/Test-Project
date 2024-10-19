@@ -1,0 +1,41 @@
+name: Terraform
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # Latest stable version 4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3  # Latest stable version 3
+      with:
+        terraform_version: latest
+
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./terraform
+
+    - name: Terraform Format
+      run: terraform fmt -check -recursive
+      working-directory: ./terraform
+
+    - name: Terraform Validate
+      run: terraform validate
+      working-directory: ./terraform
+
+    - name: Terraform Plan
+      run: terraform plan
+      working-directory: ./terraform
+
+    - name: Terraform Security Scan
+      uses: triat/terraform-security-scan@v1  # Latest stable version 1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
