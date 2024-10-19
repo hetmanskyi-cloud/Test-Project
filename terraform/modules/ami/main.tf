@@ -12,7 +12,7 @@ locals {
 # Find the latest Ubuntu AMI based on the provided filters
 data "aws_ami" "latest_ubuntu" {
   most_recent = true
-  owners      = ["099720109477"]  # Canonical
+  owners      = ["099720109477"] # Canonical
 
   dynamic "filter" {
     for_each = local.ami_filters

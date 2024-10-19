@@ -35,10 +35,10 @@ resource "aws_launch_template" "ec2" {
 
 # Define the EC2 Auto Scaling group
 resource "aws_autoscaling_group" "ec2" {
-  desired_capacity     = var.desired_capacity
-  min_size             = var.min_size
-  max_size             = var.max_size
-  vpc_zone_identifier  = var.subnet_ids
+  desired_capacity    = var.desired_capacity
+  min_size            = var.min_size
+  max_size            = var.max_size
+  vpc_zone_identifier = var.subnet_ids
   launch_template {
     id      = aws_launch_template.ec2.id
     version = "$Latest"
