@@ -48,7 +48,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup TFLint  # Set up TFLint for linting Terraform code
-      uses: wataru365/setup-tflint@v4
+      run: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
     - name: Run TFLint  # Run TFLint to check for issues in Terraform code
       run: tflint
