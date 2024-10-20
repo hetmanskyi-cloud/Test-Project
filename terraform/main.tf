@@ -53,6 +53,9 @@ module "security_groups" {
 # Module to find the latest Ubuntu AMI
 module "ami" {
   source = "./modules/ami"
+
+  ami_name   = var.ami_name   # Pass the ami_name variable
+  ami_owners = var.ami_owners # Pass the ami_owners variable
 }
 
 # EC2

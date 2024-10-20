@@ -54,9 +54,8 @@ rds_sg_tags = {
 }
 
 # AMI variables
-
 # Specify the name filter for the AMI
-ami_name = "ubuntu/images/hvm-ssd/ubuntu-20.04-amd64-server-*"
+ami_name = "ubuntu/images/hvm-ssd/ubuntu-*-amd64-server-*"
 
 # Specify the owners for the AMI
 ami_owners = ["099720109477"]
