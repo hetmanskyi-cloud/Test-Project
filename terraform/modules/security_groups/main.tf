@@ -14,6 +14,8 @@ locals {
 
 # EC2 Security Group
 resource "aws_security_group" "ec2_sg" {
+  # Ensure that this security group is attached to an instance or ENI
+  # Security Group attachment is managed through instance creation module
   name        = var.ec2_sg_name
   description = "Security Group for EC2 instances"
   vpc_id      = var.vpc_id
@@ -48,6 +50,8 @@ resource "aws_security_group" "ec2_sg" {
 
 # RDS Security Group
 resource "aws_security_group" "rds_sg" {
+  # Ensure that this security group is attached to an instance or ENI
+  # Security Group attachment is managed through RDS instance creation module
   name        = var.rds_sg_name
   description = "Security Group for RDS instances"
   vpc_id      = var.vpc_id

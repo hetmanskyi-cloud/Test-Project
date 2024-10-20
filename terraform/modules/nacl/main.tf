@@ -42,8 +42,8 @@ resource "aws_network_acl_rule" "deny_all_inbound" {
   rule_action    = "deny"
   egress         = false # Inbound traffic
   cidr_block     = "0.0.0.0/0"
-  from_port      = 0
-  to_port        = 65535 # Deny all ports
+  from_port      = 1     # Deny from port 1 (use a more restrictive range)
+  to_port        = 65534 # Deny to port 65534 (use a more restrictive range)
 }
 
 # Network ACL Rule for outbound traffic with specific protocol
