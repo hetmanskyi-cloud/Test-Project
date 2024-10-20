@@ -34,6 +34,15 @@ module "vpc" {
   subnet_tags = var.subnet_tags
 }
 
+# Network ACL
+# Module to create Network ACL
+module "nacl" {
+  source             = "./modules/nacl"
+  vpc_id             = module.vpc.vpc_id
+  public_subnet_ids  = module.vpc.public_subnet_ids
+  private_subnet_ids = module.vpc.private_subnet_ids
+}
+
 # Security Groups
 # Module to create Security Groups
 module "security_groups" {
@@ -152,9 +161,12 @@ resource "aws_db_instance" "mysql" {
   # Enable necessary logs
   enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"] # Enable logs
 
-  vpc_security_group_ids = [var.security_group_id] # Specify VPC security group IDs
+  # Copy tags to snapshot
+  copy_tags_to_snapshot = true # Ensure tags are copied to snapshots
 
-  tags = local.common_tags # Specify tags
+  # VPC configuration
+  vpc_security_group_ids = [var.security_group_id] # Specify VPC security group IDs
+  tags                   = local.common_tags       # Specify tags
 }
 
 # RDS
@@ -182,4 +194,10 @@ module "rds" {
 
   # Security Group ID for the RDS instance
   security_group_id = module.security_groups.ec2_sg_id
+
+  # KMS Key ARN for Performance Insights
+  performance_insights_kms_key_arn = module.iam.rds_performance_insights_key_arn
+
+  # IAM Role ARN for RDS monitoring
+  monitoring_role_arn = module.iam.rds_monitoring_role_arn
 }

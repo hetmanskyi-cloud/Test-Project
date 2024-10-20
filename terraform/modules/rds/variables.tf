@@ -39,3 +39,13 @@ variable "vpc_id" {
   description = "VPC ID for the RDS instance"
   type        = string
 }
+
+variable "performance_insights_kms_key_arn" {
+  description = "ARN of the KMS key for Performance Insights"
+  type        = string
+}
+
+variable "monitoring_role_arn" {
+  description = "ARN of the IAM role for RDS monitoring"
+  type        = string
+}

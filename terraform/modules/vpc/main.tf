@@ -70,3 +70,26 @@ resource "aws_route_table_association" "private" {
   subnet_id      = element(aws_subnet.private.*.id, count.index)
   route_table_id = aws_route_table.private.id
 }
+
+# Ensure the default security group of every VPC restricts all traffic
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.custom.id
+
+  ingress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = []
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = []
+  }
+
+  tags = {
+    Name = "default-security-group"
+  }
+}
