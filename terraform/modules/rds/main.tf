@@ -37,7 +37,7 @@ resource "aws_db_instance" "mysql" {
   # Enable necessary logs
   enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"] # Enable logs
 
-  vpc_security_group_ids = [var.security_group_id] # Specify VPC security group IDs
+  vpc_security_group_ids = [aws_security_group.rds_sg.id] # Specify VPC security group IDs
 
   # Ensure RDS instance with copy tags to snapshots is enabled
   copy_tags_to_snapshot = true

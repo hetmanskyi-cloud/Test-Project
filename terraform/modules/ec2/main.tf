@@ -64,3 +64,13 @@ data "aws_instances" "ec2" {
     values = ["autoscaling-ec2"]
   }
 }
+
+resource "aws_instance" "example" {
+  ami                    = var.ami_id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
+  subnet_id              = element(var.subnet_ids, 0)     # Указываем первую подсеть
+  vpc_security_group_ids = [aws_security_group.ec2_sg.id] # Привязка Security Group
+
+  tags = var.instance_tags
+}
