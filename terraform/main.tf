@@ -201,3 +201,25 @@ module "rds" {
   # IAM Role ARN for RDS monitoring
   monitoring_role_arn = module.iam.rds_monitoring_role_arn
 }
+
+resource "aws_default_security_group" "default" {
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "default-security-group"
+  }
+}
