@@ -1,3 +1,9 @@
+locals {
+  common_tags = {
+    Environment = "test"
+  }
+}
+
 # VPC
 # Module to create VPC and its components
 module "vpc" {
@@ -98,6 +104,57 @@ module "ec2" {
 
   # Security Group ID for the EC2 instances
   security_group_id = module.security_groups.ec2_sg_id
+}
+
+# IAM
+# Module to create IAM resources
+module "iam" {
+  source = "./modules/iam"
+}
+
+# Define the subnet group for RDS
+resource "aws_db_subnet_group" "default" {
+  name        = "default-subnet-group"
+  description = "Default subnet group for RDS instances"
+  subnet_ids  = module.vpc.private_subnet_ids # Include only private subnets
+  tags = {
+    Name = "default-subnet-group"
+  }
+}
+
+resource "aws_db_instance" "mysql" {
+  allocated_storage                   = 20                                          # Specify allocated storage size
+  storage_type                        = "gp2"                                       # Specify storage type
+  engine                              = "mysql"                                     # Specify database engine
+  engine_version                      = "5.7"                                       # Specify engine version
+  instance_class                      = "db.t2.micro"                               # Specify instance class
+  identifier                          = var.db_name                                 # Specify database identifier
+  username                            = var.db_username                             # Specify database username
+  password                            = var.db_password                             # Specify database password
+  db_subnet_group_name                = aws_db_subnet_group.default.name            # Specify subnet group name
+  skip_final_snapshot                 = true                                        # Skip final snapshot upon deletion
+  publicly_accessible                 = false                                       # Avoid public access
+  backup_retention_period             = 30                                          # Set backup retention period
+  multi_az                            = true                                        # Enable multi-AZ for high availability
+  storage_encrypted                   = true                                        # Enable storage encryption
+  deletion_protection                 = true                                        # Enable deletion protection
+  iam_database_authentication_enabled = true                                        # Enable IAM authentication
+  performance_insights_enabled        = true                                        # Enable Performance Insights
+  performance_insights_kms_key_id     = module.iam.rds_performance_insights_key_arn # Use the KMS key from IAM module
+
+  # Enable enhanced monitoring
+  monitoring_interval = 60                                 # Interval in seconds
+  monitoring_role_arn = module.iam.rds_monitoring_role_arn # Use the IAM role from IAM module
+
+  # Enable automatic minor upgrades
+  auto_minor_version_upgrade = true
+
+  # Enable necessary logs
+  enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"] # Enable logs
+
+  vpc_security_group_ids = [var.security_group_id] # Specify VPC security group IDs
+
+  tags = local.common_tags # Specify tags
 }
 
 # RDS

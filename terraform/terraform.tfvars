@@ -1,5 +1,4 @@
 # VPC variables
-
 # Specify the region where resources will be created
 aws_region = "eu-west-1"
 
@@ -34,7 +33,6 @@ subnet_tags = {
 }
 
 # Security Group variables
-
 # Security group name for EC2 instances
 ec2_sg_name = "ec2-sg"
 
@@ -43,6 +41,9 @@ ec2_sg_tags = {
   Environment = "test"
   Owner       = "hetmansky"
 }
+
+# Security Group ID for RDS instances
+security_group_id = "your-security-group-id"
 
 # RDS security group name
 rds_sg_name = "rds-sg"

@@ -27,6 +27,16 @@ resource "aws_db_instance" "mysql" {
   performance_insights_enabled        = true                                                                          # Enable Performance Insights
   performance_insights_kms_key_id     = "arn:aws:kms:eu-west-1:739275435828:key/fb56457e-49fd-446d-b266-6ea578b8d42d" # KMS Key ID for Performance Insights encryption
 
+  # Enable enhanced monitoring
+  monitoring_interval = 60                                                   # Interval in seconds
+  monitoring_role_arn = "arn:aws:iam::123456789012:role/rds-monitoring-role" # Replace with actual role ARN
+
+  # Enable automatic minor upgrades
+  auto_minor_version_upgrade = true
+
+  # Enable necessary logs
+  enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"] # Enable logs
+
   vpc_security_group_ids = [var.security_group_id]
 
   tags = local.common_tags
