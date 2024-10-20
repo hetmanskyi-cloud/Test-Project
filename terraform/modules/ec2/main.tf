@@ -24,7 +24,8 @@ resource "aws_launch_template" "ec2" {
   }
 
   network_interfaces {
-    security_groups = [var.security_group_id] # Use the security group ID from variable
+    subnet_id       = element(var.subnet_ids, 0) # Use the first subnet from the list
+    security_groups = [var.security_group_id]
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data_nginx.sh", {}))
