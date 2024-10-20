@@ -60,7 +60,7 @@ resource "aws_network_acl_rule" "allow_all_outbound" {
 
 # Associate NACL with public subnets
 resource "aws_network_acl_association" "public" {
-  count          = length(local.public_subnet_cidr_blocks)
+  count          = length(var.public_subnet_ids)
   network_acl_id = aws_network_acl.public.id
   subnet_id      = element(var.public_subnet_ids, count.index)
 }

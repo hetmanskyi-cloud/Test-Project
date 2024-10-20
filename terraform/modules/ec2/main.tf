@@ -1,19 +1,18 @@
 # Define local variables
 locals {
   base_tags = merge(
-    {
-      Name = var.instance_name
-    },
+    { Name = var.instance_name },
     var.instance_tags
   )
 }
 
 # Define the EC2 launch template
 resource "aws_launch_template" "ec2" {
-  name_prefix   = "ec2-"
-  image_id      = var.ami_id
-  instance_type = var.instance_type
-  key_name      = var.key_name
+  name_prefix            = "ec2-"
+  image_id               = var.ami_id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
+  vpc_security_group_ids = [var.security_group_id] # Use the security group ID from variable
 
   block_device_mappings {
     device_name = "/dev/sda1"
@@ -35,6 +34,7 @@ resource "aws_launch_template" "ec2" {
     http_tokens = "required"
   }
 
+  # Tags for the EC2 instances
   tags = local.base_tags
 }
 
@@ -44,6 +44,7 @@ resource "aws_autoscaling_group" "ec2" {
   min_size            = var.min_size
   max_size            = var.max_size
   vpc_zone_identifier = var.subnet_ids
+
   launch_template {
     id      = aws_launch_template.ec2.id
     version = "$Latest"
