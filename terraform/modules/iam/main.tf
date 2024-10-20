@@ -55,7 +55,12 @@ resource "aws_kms_key" "rds_performance_insights_key" {
       {
         Sid : "Allow use of the key",
         Effect : "Allow",
-        Principal : { AWS : "*" },
+        Principal : {
+          AWS : [
+            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/rds-monitoring-role",
+            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/rds-user"
+          ]
+        },
         Action : [
           "kms:Encrypt",
           "kms:Decrypt",
