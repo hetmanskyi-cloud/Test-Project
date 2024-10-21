@@ -1,9 +1,3 @@
-locals {
-  common_tags = {
-    Environment = "test"
-  }
-}
-
 # VPC
 module "vpc" {
   source               = "./modules/vpc"

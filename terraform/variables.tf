@@ -56,12 +56,6 @@ variable "subnet_tags" {
 
 # Security Group variables
 
-# Variable for security group ID
-variable "security_group_id" {
-  description = "ID of the security group"
-  type        = string
-}
-
 # Define the name of the EC2 security group
 variable "ec2_sg_name" {
   description = "Name of the EC2 security group"
