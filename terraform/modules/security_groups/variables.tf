@@ -6,7 +6,7 @@ variable "ec2_sg_name" {
 
 # Variable for the VPC ID where the Security Group will be created
 variable "vpc_id" {
-  description = "VPC ID where the Security Group will be created"
+  description = "The ID of the VPC"
   type        = string
 }
 

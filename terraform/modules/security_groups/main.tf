@@ -12,6 +12,29 @@ locals {
   ]
 }
 
+# Default Security Group
+resource "aws_default_security_group" "default" {
+  vpc_id = var.vpc_id
+
+  ingress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = []
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = []
+  }
+
+  tags = {
+    Name = "default-security-group"
+  }
+}
+
 # EC2 Security Group
 resource "aws_security_group" "ec2_sg" {
   # Ensure that this security group is attached to an instance or ENI
