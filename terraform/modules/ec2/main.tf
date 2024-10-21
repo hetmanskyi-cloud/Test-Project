@@ -6,37 +6,36 @@ locals {
   )
 }
 
-# Define the EC2 launch template
-resource "aws_launch_template" "ec2" {
-  name_prefix            = "ec2-"
-  image_id               = var.ami_id
+resource "aws_instance" "ec2_instance" {
+  ami                    = var.ami_id
   instance_type          = var.instance_type
   key_name               = var.key_name
-  vpc_security_group_ids = [var.security_group_id] # Use the security group ID from variable
+  vpc_security_group_ids = [var.security_group_id] # Привязка Security Group
+  subnet_id              = element(var.subnet_ids, 0)
+  tags                   = var.instance_tags
+}
 
+# Define the EC2 launch template
+resource "aws_launch_template" "ec2" {
+  name_prefix            = "example-"
+  image_id               = aws_instance.ec2_instance.ami
+  instance_type          = aws_instance.ec2_instance.instance_type
+  key_name               = aws_instance.ec2_instance.key_name
+  vpc_security_group_ids = aws_instance.ec2_instance.vpc_security_group_ids
   block_device_mappings {
-    device_name = "/dev/sda1"
+    device_name = aws_instance.ec2_instance.root_block_device[0].device_name
     ebs {
-      volume_size           = var.ebs_volume_size
-      volume_type           = "gp2"
-      delete_on_termination = true
+      volume_size           = aws_instance.ec2_instance.root_block_device[0].volume_size
+      volume_type           = aws_instance.ec2_instance.root_block_device[0].volume_type
+      delete_on_termination = aws_instance.ec2_instance.root_block_device[0].delete_on_termination
     }
   }
-
   network_interfaces {
-    subnet_id       = element(var.subnet_ids, 0) # Используем первую подсеть из списка
-    security_groups = [var.security_group_id]
+    subnet_id       = aws_instance.ec2_instance.subnet_id
+    security_groups = aws_instance.ec2_instance.vpc_security_group_ids
   }
-
   user_data = base64encode(templatefile("${path.module}/user_data_nginx.sh", {}))
-
-  # Enable HTTP token requirement for IMDS
-  metadata_options {
-    http_tokens = "required"
-  }
-
-  # Tags for the EC2 instances
-  tags = local.base_tags
+  tags      = local.base_tags
 }
 
 # Define the EC2 Auto Scaling group
