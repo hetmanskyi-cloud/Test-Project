@@ -71,3 +71,12 @@ resource "aws_network_acl_association" "private" {
   network_acl_id = aws_network_acl.private.id
   subnet_id      = element(var.private_subnet_ids, count.index)
 }
+
+resource "aws_network_interface" "test_eni" {
+  subnet_id       = element(var.public_subnet_ids, 0) # Используем первую публичную подсеть
+  security_groups = [var.ec2_sg_id]                   # Привязка Security Group
+
+  tags = {
+    Name = "test-eni"
+  }
+}
