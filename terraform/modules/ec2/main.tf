@@ -6,36 +6,51 @@ locals {
   )
 }
 
-resource "aws_instance" "ec2_instance" {
-  ami                    = var.ami_id
-  instance_type          = var.instance_type
-  key_name               = var.key_name
-  vpc_security_group_ids = [var.security_group_id] # Привязка Security Group
-  subnet_id              = element(var.subnet_ids, 0)
-  tags                   = var.instance_tags
-}
-
-# Define the EC2 launch template
 resource "aws_launch_template" "ec2" {
   name_prefix            = "example-"
   image_id               = aws_instance.ec2_instance.ami
   instance_type          = aws_instance.ec2_instance.instance_type
   key_name               = aws_instance.ec2_instance.key_name
   vpc_security_group_ids = aws_instance.ec2_instance.vpc_security_group_ids
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
   block_device_mappings {
     device_name = aws_instance.ec2_instance.root_block_device[0].device_name
     ebs {
+      encrypted             = true
       volume_size           = aws_instance.ec2_instance.root_block_device[0].volume_size
       volume_type           = aws_instance.ec2_instance.root_block_device[0].volume_type
       delete_on_termination = aws_instance.ec2_instance.root_block_device[0].delete_on_termination
     }
   }
+
   network_interfaces {
     subnet_id       = aws_instance.ec2_instance.subnet_id
     security_groups = aws_instance.ec2_instance.vpc_security_group_ids
   }
+
   user_data = base64encode(templatefile("${path.module}/user_data_nginx.sh", {}))
   tags      = local.base_tags
+}
+
+resource "aws_instance" "ec2_instance" {
+  ami                    = var.ami_id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
+  vpc_security_group_ids = [var.security_group_id]
+  subnet_id              = element(var.subnet_ids, 0)
+  tags                   = var.instance_tags
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
 }
 
 # Define the EC2 Auto Scaling group
