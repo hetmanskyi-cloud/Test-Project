@@ -15,4 +15,3 @@ output "db_password" {
   description = "Password for the RDS instance"
   value       = var.db_password
 }
-
