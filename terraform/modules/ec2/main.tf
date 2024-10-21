@@ -42,6 +42,9 @@ resource "aws_instance" "ec2_instance" {
   key_name               = var.key_name
   vpc_security_group_ids = [var.security_group_id]
   subnet_id              = element(var.subnet_ids, 0)
+  ebs_optimized          = true
+  monitoring             = true
+  iam_instance_profile   = var.instance_profile_name
   tags                   = var.instance_tags
 
   metadata_options {

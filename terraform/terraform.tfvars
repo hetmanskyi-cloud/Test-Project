@@ -103,3 +103,5 @@ db_tags = {
   Environment = "test"
   Owner       = "hetmansky"
 }
+
+instance_profile_name = "example-instance-profile"

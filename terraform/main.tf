@@ -40,19 +40,20 @@ module "ami" {
 
 # EC2
 module "ec2" {
-  source            = "./modules/ec2"
-  ami_id            = module.ami.ami_id
-  instance_type     = var.instance_type
-  key_name          = var.key_name
-  subnet_ids        = concat(module.vpc.public_subnet_ids, module.vpc.private_subnet_ids)
-  desired_capacity  = var.desired_capacity
-  min_size          = var.min_size
-  max_size          = var.max_size
-  ebs_volume_size   = var.ebs_volume_size
-  instance_name     = var.instance_name
-  instance_tags     = var.instance_tags
-  security_group_id = module.security_groups.ec2_sg_id # Теперь это корректный выход
-  vpc_id            = module.vpc.vpc_id
+  source                = "./modules/ec2"
+  ami_id                = module.ami.ami_id
+  instance_type         = var.instance_type
+  key_name              = var.key_name
+  subnet_ids            = concat(module.vpc.public_subnet_ids, module.vpc.private_subnet_ids)
+  desired_capacity      = var.desired_capacity
+  min_size              = var.min_size
+  max_size              = var.max_size
+  ebs_volume_size       = var.ebs_volume_size
+  instance_name         = var.instance_name
+  instance_tags         = var.instance_tags
+  security_group_id     = module.security_groups.ec2_sg_id # Теперь это корректный выход
+  vpc_id                = module.vpc.vpc_id
+  instance_profile_name = var.instance_profile_name
 }
 
 # IAM
@@ -82,27 +83,4 @@ module "rds" {
   security_group_id                = module.security_groups.rds_sg_id # Теперь это корректный выход
   performance_insights_kms_key_arn = module.iam.rds_performance_insights_key_arn
   monitoring_role_arn              = module.iam.rds_monitoring_role_arn
-}
-
-# Default Security Group
-resource "aws_default_security_group" "default" {
-  vpc_id = module.vpc.vpc_id
-
-  ingress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = []
-  }
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = []
-  }
-
-  tags = {
-    Name = "default-security-group"
-  }
 }

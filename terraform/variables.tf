@@ -169,3 +169,8 @@ variable "db_tags" {
   description = "Tags for the RDS instance"
   type        = map(string)
 }
+
+variable "instance_profile_name" {
+  description = "The name of the IAM instance profile to attach to the EC2 instance"
+  type        = string
+}
